@@ -159,7 +159,7 @@ $(function() {
 	}
 	
 	function checkFileName(fileName) {
-		if (!fileName || !fileName.toLowerCase().match('(apk)$')) {
+		if (!fileName) { // 可以在这里进行后缀名过滤 // 如 !fileName.toLowerCase().match('(apk)$')
 			return STRINGS.UNSUPPORTED_FILE_TYPE;
 		}
 		
@@ -210,7 +210,7 @@ $(function() {
 		$(fileSelector).change(function() {
 			if (this.files) {
 				uploadFiles(this.files);
-				//优先使用HTML5上传方式
+				// 优先使用 HTML5 上传方式
 				return;
 			}
 			var fileName = $(this).val();
@@ -256,7 +256,7 @@ $(function() {
 	
 	function formatFileSize(value) {
 	    var multiplyFactor = 0;
-	    var tokens = ["bytes","KB","MB","GB","TB"];
+	    var tokens = ["Bytes","KB","MB","GB","TB"];
     
 	    while (value > 1024) {
 	        value /= 1024;

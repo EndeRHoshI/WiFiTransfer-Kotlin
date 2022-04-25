@@ -4,16 +4,19 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.hoshi.lib.extentions.matchTrue
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.koushikdutta.async.AsyncServer
+import com.koushikdutta.async.http.body.MultipartFormDataBody
+import com.koushikdutta.async.http.body.UrlEncodedFormBody
 import com.koushikdutta.async.http.server.AsyncHttpServer
 import com.koushikdutta.async.http.server.HttpServerRequestCallback
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.BufferedInputStream
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.IOException
+import java.io.*
+import java.net.URLDecoder
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.text.DecimalFormat
 
@@ -25,6 +28,7 @@ class WebService : Service() {
 
     private val httpServer by lazy { AsyncHttpServer() }
     private val asyncServer by lazy { AsyncServer() }
+    private val fileUploadHolder by lazy { FileUploadHolder() }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -55,7 +59,7 @@ class WebService : Service() {
             }
         }
 
-        // query upload list
+        // query upload list，查询上传列表
         httpServer.get("/files") { _, response ->
             val array = JSONArray()
             val dir = Const.DIR
@@ -82,6 +86,96 @@ class WebService : Service() {
             }
             response.send(array.toString())
         }
+
+        // delete，删除文件
+        httpServer.post("/files/.*") { request, response ->
+            val body = request.body as UrlEncodedFormBody
+            if ("delete".equals(body.get().getString("_method"), true)) {
+                var path = request.path.replace("/files/", "")
+                try {
+                    path = URLDecoder.decode(path, "utf-8")
+                } catch (e: UnsupportedEncodingException) {
+                    e.printStackTrace()
+                }
+                val file = File(Const.DIR, path)
+                if (file.exists() && file.isFile) {
+                    file.delete()
+                    refreshFileList()
+                }
+            }
+            response.end()
+        }
+
+        // download，下载文件
+        httpServer.get("/files/.*") { request, response ->
+            var path = request.path.replace("/files/", "")
+            try {
+                path = URLDecoder.decode(path, "utf-8")
+            } catch (e: UnsupportedEncodingException) {
+                e.printStackTrace()
+            }
+            val file = File(Const.DIR, path)
+            if (file.exists() && file.isFile) {
+                try {
+                    response.headers.add(
+                        "Content-Disposition",
+                        "attachment;filename=" + URLEncoder.encode(file.name, "utf-8")
+                    )
+                } catch (e: UnsupportedEncodingException) {
+                    e.printStackTrace()
+                }
+                response.sendFile(file)
+                return@get
+            }
+            response.code(404).send("Not found!")
+        }
+
+        // upload，上传文件
+        httpServer.post("/files") { request, response ->
+            val body = request.body as MultipartFormDataBody
+            body.setMultipartCallback { part ->
+                if (part.isFile) {
+                    body.setDataCallback { _, bb ->
+                        fileUploadHolder.write(bb.allByteArray)
+                        bb.recycle()
+                    }
+                } else {
+                    if (body.dataCallback == null) {
+                        body.setDataCallback { _, bb ->
+                            try {
+                                val fileName = URLDecoder.decode(String(bb.allByteArray), "UTF-8")
+                                fileUploadHolder.setFileName(fileName)
+                            } catch (e: UnsupportedEncodingException) {
+                                e.printStackTrace()
+                            }
+                            bb.recycle()
+                        }
+                    }
+                }
+            }
+            request.setEndCallback {
+                fileUploadHolder.reset()
+                response.end()
+                refreshFileList()
+            }
+        }
+
+        // 进度
+        httpServer.get("/progress/.*") { request, response ->
+            val res = JSONObject()
+            val path = request.path.replace("/progress/", "")
+            if (path == fileUploadHolder.getFileName()) {
+                try {
+                    res.put("fileName", fileUploadHolder.getFileName())
+                    res.put("size", fileUploadHolder.getTotalSize())
+                    res.put("progress", (fileUploadHolder.getFileOutPutStream() == null).matchTrue(1, 0.1))
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+            response.send(res)
+        }
+
         httpServer.listen(asyncServer, Const.HTTP_PORT)
     }
 
@@ -136,6 +230,13 @@ class WebService : Service() {
                 return String(bOutputStream.toByteArray(), StandardCharsets.UTF_8)
             }
         }
+    }
+
+    /**
+     * 发送刷新文件列表事件
+     */
+    private fun refreshFileList() {
+        LiveEventBus.get<Unit>(Const.BUS_KEY_REFRESH_FILE_LIST).post(null)
     }
 
     override fun onDestroy() {

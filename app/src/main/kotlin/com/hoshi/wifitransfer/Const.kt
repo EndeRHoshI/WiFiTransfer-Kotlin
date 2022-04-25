@@ -8,7 +8,11 @@ import java.io.File
  * Created by lv.qx on 2022/4/24
  */
 object Const {
+    const val BUS_KEY_REFRESH_FILE_LIST = "refresh_file_list" // 刷新文件列表事件 key
     const val HTTP_PORT = 12345 // 端口
-    private const val DIR_IN_SDCARD = "WifiTransfer"
-    val DIR by lazy { File(Environment.getExternalStorageDirectory().toString() + File.separator + Const.DIR_IN_SDCARD) }
+
+    /**
+     * 根目录下的文件夹
+     */
+    val DIR by lazy { File(Environment.getExternalStorageDirectory().toString() + File.separator + "WiFiTransfer") }
 }
