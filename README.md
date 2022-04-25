@@ -9,4 +9,6 @@
 
 [原始版本博客原文](https://blog.csdn.net/gorgle/article/details/52788701)
 
+[MZCretin 博客原文](http://blog.csdn.net/u010998327/article/details/79048792)
+
 [WiFi-Transfer-apk]: https://github.com/MZCretin/WifiTransfer-master
