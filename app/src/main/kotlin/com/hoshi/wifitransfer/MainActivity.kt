@@ -73,7 +73,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 WebService.start(context)
                 if (WiFiUtils.openWifi()) {
                     val binding = DialogWifiOpenBinding.inflate(LayoutInflater.from(context))
-                    binding.tvAddress.text = "http://" + com.hoshi.wifitransfer.WiFiUtils.getWiFiIp(context) + ":" + Const.HTTP_PORT
+                    binding.tvAddress.text = "http://" + WiFiUtils.getWiFiIp(context) + ":" + Const.HTTP_PORT
 
                     XPopupCommonUtils.showCustom(
                         context,
