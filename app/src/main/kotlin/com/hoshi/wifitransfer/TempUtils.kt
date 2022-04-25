@@ -8,6 +8,7 @@ import java.text.DecimalFormat
  */
 object TempUtils {
 
+    @Deprecated("已经并入工具类中")
     fun getFileSizeFormat(length: Long): String {
         val df = DecimalFormat("######0.00")
         val l = length / 1000 // KB

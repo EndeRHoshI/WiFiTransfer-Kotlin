@@ -26,7 +26,7 @@ class MainViewModel : BaseViewModel() {
 
     private fun handleFile(file: File): FileBean {
         val path = file.absolutePath
-        val size = TempUtils.getFileSizeFormat(file.length())
+        val size = FileUtils.getSizeFormat(file.length())
         val name = file.name
         return FileBean(path, name = name, size = size)
     }

@@ -1,9 +1,11 @@
 package com.hoshi.wifitransfer
 
+import com.hoshi.lib.utils.FileUtils
 import com.hoshi.lib.utils.HLog
 import java.io.*
 
 /**
+ * 上传 Holder，用于处理上传时的各种逻辑
  * Created by lv.qx on 2022/4/25
  */
 class FileUploadHolder {
@@ -25,10 +27,7 @@ class FileUploadHolder {
         this.fileName = fileName
         totalSize = 0
 
-        // TODO 替换 FileUtils.createIfNoExists()
-        if (!Const.DIR.exists()) {
-            Const.DIR.mkdirs()
-        }
+        FileUtils.createIfNoExists(Const.DIR)
         this.receivedFile = File(Const.DIR, fileName)
         HLog.d(TAG, receivedFile?.absolutePath.orEmpty())
         try {
