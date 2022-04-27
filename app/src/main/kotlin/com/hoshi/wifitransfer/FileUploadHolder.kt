@@ -1,7 +1,7 @@
 package com.hoshi.wifitransfer
 
-import com.hoshi.lib.utils.FileUtils
-import com.hoshi.lib.utils.HLog
+import com.hoshi.core.utils.FileUtils
+import com.hoshi.core.utils.HLog
 import java.io.*
 
 /**

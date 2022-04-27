@@ -1,8 +1,8 @@
 package com.hoshi.wifitransfer
 
 import androidx.lifecycle.MutableLiveData
-import com.hoshi.lib.base.BaseViewModel
-import com.hoshi.lib.utils.FileUtils
+import com.hoshi.armor.base.BaseViewModel
+import com.hoshi.core.utils.FileUtils
 import java.io.File
 
 /**

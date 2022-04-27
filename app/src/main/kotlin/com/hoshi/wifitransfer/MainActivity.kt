@@ -11,11 +11,11 @@ import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
-import com.hoshi.lib.annotation.StatusTextLight
-import com.hoshi.lib.base.BaseActivity
-import com.hoshi.lib.extentions.showToast
-import com.hoshi.lib.utils.popup.XPopupCommonUtils
-import com.hoshi.lib.utils.wifi.WiFiUtils
+import com.hoshi.armor.annotation.StatusTextLight
+import com.hoshi.armor.base.BaseActivity
+import com.hoshi.armor.extentions.showToast
+import com.hoshi.armor.utils.popup.XPopupCommonUtils
+import com.hoshi.armor.utils.wifi.WiFiUtils
 import com.hoshi.wifitransfer.databinding.ActivityMainBinding
 import com.hoshi.wifitransfer.databinding.DialogWifiOpenBinding
 import com.jeremyliao.liveeventbus.LiveEventBus

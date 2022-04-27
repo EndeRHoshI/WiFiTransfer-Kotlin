@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.hoshi.lib:hoshi-armor:1.2.2'
+    implementation 'com.hoshi.lib:hoshi-armor:1.3.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.koushikdutta.async:androidasync:2.2.1'
 }

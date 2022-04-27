@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.hoshi.lib.extentions.matchTrue
+import com.hoshi.core.extentions.matchTrue
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.koushikdutta.async.AsyncServer
 import com.koushikdutta.async.http.body.MultipartFormDataBody
